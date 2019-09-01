@@ -14,7 +14,7 @@ public class RssFeedContoller {
     @Autowired
     private LidlRssFeedView view;
      
-    @GetMapping("/rss/lidl")
+    @GetMapping("/lidl")
     public View getFeed() {
         return view;
     }

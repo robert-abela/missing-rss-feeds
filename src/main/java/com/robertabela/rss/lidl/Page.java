@@ -34,7 +34,14 @@ public class Page {
 
 		try {
 			Document doc = Jsoup.connect(url).get();
+			
 			title = doc.title();
+			try {
+				//try to trim title
+				title = title.substring(0, title.indexOf("from")-1) ;
+			}
+			catch (IndexOutOfBoundsException e) {/*leave as is if anything happens*/}
+			
 			Elements productTiles = doc.getElementsByClass("product");
 
 			for (Element tile : productTiles) {

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.jsoup.nodes.Element;
 
+import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Item;
 
@@ -19,11 +20,16 @@ public class ProductItem extends Item {
 		
 		String itemTitle = tile.getElementsByClass("product__title").text();
 		setTitle(itemTitle);
-		System.out.println("-------\nitemTitle: "+itemTitle);
-		setAuthor("€" + tile.getElementsByClass("pricefield__price").attr("content"));
+
+		setAuthor("robert-abela/missing-rss-feeds/lidl");
+		
 		setLink(Offers.BASE_URL+tile.getElementsByClass("product__body").attr("href"));
+		
 		Description description = new Description();
-		description.setValue(page.getTitle() + ": " + itemTitle);
+		description.setType(Content.HTML);
+		String descStr = String.format("%s: %s<br>Price: €%s", page.getTitle(), itemTitle, 
+				tile.getElementsByClass("pricefield__price").attr("content"));
+		description.setValue(descStr);
 		setDescription(description);
 		
 		try {
