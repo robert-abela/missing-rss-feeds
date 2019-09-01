@@ -8,6 +8,7 @@ import static java.util.Calendar.THURSDAY;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,9 +21,11 @@ import com.rometools.rome.feed.rss.Item;
 
 @Component
 public class LidlRssFeedView extends AbstractRssFeedView {
-	
+
 	private List<Item> cachedList = null;
 	private int lastScrapeDayOfYear = -1;
+
+	TimeZone maltaTimeZone = TimeZone.getTimeZone("CEST");
 
 	@Override
 	protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest req) {
@@ -34,37 +37,36 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 	@Override
 	protected List<Item> buildFeedItems(Map<String, Object> model, HttpServletRequest req, HttpServletResponse res) {
 		if (cachedList == null) {
-			//First run after boot, generate list
-			System.out.println("First run after boot");
+			// First run after boot, generate list
+			System.out.println("First list generated after webapp boot");
 			generateList();
-		}
-		else {
-			Calendar today = Calendar.getInstance();
-			switch (today.get(DAY_OF_WEEK)) {
+		} else {
+			Calendar todayCET = Calendar.getInstance(maltaTimeZone);
+			switch (todayCET.get(DAY_OF_WEEK)) {
 			case MONDAY:
 			case THURSDAY:
-				//Generate list on first request on Monday and Thursday
+				// Generate list on first request on Monday and Thursday
 				System.out.println("First request on offer days");
-				
-				int todayDayOfYear = today.get(DAY_OF_YEAR);
+
+				int todayDayOfYear = todayCET.get(DAY_OF_YEAR);
 				if (lastScrapeDayOfYear < todayDayOfYear)
 					generateList();
 				else
 					System.out.println("Already scraped today, skipping...");
 				break;
 			default:
-				//Don't do anything if it's not Monday or Thursday
+				// Don't do anything if it's not Monday or Thursday
 				System.out.println("It's not offer day, skipping...");
 				break;
 			}
 		}
-		
+
 		return cachedList;
 	}
-	
+
 	private void generateList() {
 		System.out.println("Generating list...");
 		cachedList = new Offers().getItems();
-		lastScrapeDayOfYear = Calendar.getInstance().get(DAY_OF_YEAR);
+		lastScrapeDayOfYear = Calendar.getInstance(maltaTimeZone).get(DAY_OF_YEAR);
 	}
 }
