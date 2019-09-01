@@ -31,7 +31,7 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 	protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest req) {
 		feed.setTitle("Lidl non-food offers");
 		feed.setDescription("Lidl Malta: non-food offers for this and next week");
-		feed.setLink("https://github.com/robert-abela/missing-rss-feeds");
+		feed.setLink(Offers.BASE_URL);
 	}
 
 	@Override
