@@ -3,13 +3,10 @@ package com.robertabela.rss.lidl;
 import java.util.Date;
 
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Item;
-import com.rometools.rome.feed.synd.SyndEntry;
-import com.rometools.rome.feed.synd.SyndEntryImpl;
 
 public class ProductItem extends Item {
 
@@ -31,11 +28,12 @@ public class ProductItem extends Item {
 		Element bigDiv = tile.getElementsByClass("product__image").get(0);
 		Element innerDiv = bigDiv.getElementsByTag("div").get(0);
 		Element image = innerDiv.getElementsByTag("img").get(0);
+		String imageUrl = image.attr("src").replace("-lazy", "");
 		
 		Description description = new Description();
 		description.setType(Content.HTML);
 		String descStr = String.format("<img src=\"%s\"><br>%s: %s<br>Price: €%s<br>From: %s", 
-				image.attr("src"),
+				imageUrl,
 				page.getTitle(), 
 				itemTitle, 
 				tile.getElementsByClass("pricefield__price").attr("content"),
