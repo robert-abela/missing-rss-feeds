@@ -31,7 +31,7 @@ public class Page {
 		this.id = Integer.parseInt(idNum);
 	}
 
-	public List<Item> getProducts() {
+	public List<Item> getProducts(List<Item> cachedProducts) {
 		System.out.println("Getting products in: " + url);
 
 		try {
@@ -45,10 +45,13 @@ public class Page {
 			catch (IndexOutOfBoundsException e) {/*leave as is if anything strange happens*/}
 			
 			Elements productTiles = doc.getElementsByClass("product");
-
 			for (Element tile : productTiles) {
 				try {
-					products.add(new ProductItem(this, tile));
+					ProductItem p = new ProductItem(this, tile);
+					if (!cachedProducts.contains(p)) {
+						p.readInfo();
+						products.add(p);
+					}
 				}
 				catch (TeaserException e) {
 					System.out.println("Ignoring teaser tile...");

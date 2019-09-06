@@ -73,7 +73,7 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 
 	private void generateList() {
 		System.out.println("Generating list...");
-		cachedList = new Offers().getItems();
+		cachedList = new Offers().getItems(cachedList);
 		lastScrapeDayOfYear = Calendar.getInstance(maltaTimeZone).get(DAY_OF_YEAR);
 	}
 }

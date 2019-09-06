@@ -32,11 +32,13 @@ public class Offers {
 		}
 	}
 
-	public List<Item> getItems() {
-		List<Item> products = new ArrayList<Item>();
+	public List<Item> getItems(List<Item> cachedProducts) {
+		if (cachedProducts == null)
+			cachedProducts = new ArrayList<Item>();
+		
 		for (Page page : offerPages) {
-			products.addAll(page.getProducts());
+			cachedProducts.addAll(page.getProducts(cachedProducts));
 		}
-		return products;
+		return cachedProducts;
 	}
 }
