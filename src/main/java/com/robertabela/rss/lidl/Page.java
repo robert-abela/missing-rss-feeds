@@ -1,9 +1,9 @@
 package com.robertabela.rss.lidl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -19,8 +19,10 @@ public class Page {
 	private int id;
 	private String url;
 	private String title;
-	private Date startingDate;
+	private String startingDate;
 	private List<Item> products;
+	
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd/MM/yyyy");
 
 	public Page(String url) {
 		this.url = url;
@@ -40,7 +42,7 @@ public class Page {
 				//try to trim title
 				title = title.substring(0, title.indexOf("from")-1) ;
 			}
-			catch (IndexOutOfBoundsException e) {/*leave as is if anything happens*/}
+			catch (IndexOutOfBoundsException e) {/*leave as is if anything strange happens*/}
 			
 			Elements productTiles = doc.getElementsByClass("product");
 
@@ -67,15 +69,18 @@ public class Page {
 		return id;
 	}
 
-
-	public Date getDate(Element tile) {
+	public String getDate(Element tile) {
 		if (startingDate == null) {
-			String rawDate = tile.getElementsByClass("ribbon__item--primary").text();
-			int day = Integer.parseInt(rawDate.substring(5, 7));
-			int month = Integer.parseInt(rawDate.substring(8, 10)) - 1;
-			Calendar pubCal = new GregorianCalendar(2019, month, day, 0, 0);
-			startingDate = pubCal.getTime();
-			System.out.println(startingDate);
+			try {
+				String rawDate = tile.getElementsByClass("ribbon__item--primary").text();
+				int day = Integer.parseInt(rawDate.substring(5, 7));
+				int month = Integer.parseInt(rawDate.substring(8, 10)) - 1;
+				Calendar pubCal = new GregorianCalendar(2019, month, day, 0, 0);
+				startingDate = dateFormat.format(pubCal.getTime());
+			}
+			catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+				System.out.println("Failed to read date: " + e.getMessage());
+			}
 		}
 		
 		return startingDate;

@@ -3,15 +3,18 @@ package com.robertabela.rss.lidl;
 import java.util.Date;
 
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Item;
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndEntryImpl;
 
 public class ProductItem extends Item {
 
 	private static final long serialVersionUID = 5166789136384820420L;
-	
+		
 	public ProductItem(Page page, Element tile) throws TeaserException {
 		super();
 		
@@ -25,19 +28,20 @@ public class ProductItem extends Item {
 		
 		setLink(Offers.BASE_URL+tile.getElementsByClass("product__body").attr("href"));
 		
+		Element bigDiv = tile.getElementsByClass("product__image").get(0);
+		Element innerDiv = bigDiv.getElementsByTag("div").get(0);
+		Element image = innerDiv.getElementsByTag("img").get(0);
+		
 		Description description = new Description();
 		description.setType(Content.HTML);
-		String descStr = String.format("%s: %s<br>Price: €%s", page.getTitle(), itemTitle, 
-				tile.getElementsByClass("pricefield__price").attr("content"));
+		String descStr = String.format("<img src=\"%s\"><br>%s: %s<br>Price: €%s<br>From: %s", 
+				image.attr("src"),
+				page.getTitle(), 
+				itemTitle, 
+				tile.getElementsByClass("pricefield__price").attr("content"),
+				page.getDate(tile));
 		description.setValue(descStr);
 		setDescription(description);
-		
-		try {
-			setPubDate(page.getDate(tile));
-		}
-		catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-			setPubDate(new Date());	
-			System.err.println(e);
-		}
+		setPubDate(new Date());		
 	}
 }
