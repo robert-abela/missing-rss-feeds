@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import com.rometools.rome.feed.rss.Channel;
-import com.rometools.rome.feed.rss.Image;
 import com.rometools.rome.feed.rss.Item;
 
 @Component
@@ -34,12 +33,12 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 		feed.setDescription("Lidl Malta: non-food offers for this and next week");
 		feed.setLink(Offers.BASE_URL);
 
-		Image img = new Image();
+		/*Image img = new Image();
 		img.setUrl("https://raw.githubusercontent.com/robert-abela/missing-rss-feeds/master/src/main/resources/Lidl_logo.png");
 		img.setTitle("LIDL Logo");
 		img.setHeight(128);
 		img.setWidth(128);
-		feed.setImage(img);
+		feed.setImage(img);*/
 	}
 
 	@Override
