@@ -9,5 +9,4 @@ public class RssFeedApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RssFeedApplication.class, args);
 	}
-
 }
