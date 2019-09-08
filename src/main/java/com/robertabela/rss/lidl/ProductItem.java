@@ -50,7 +50,6 @@ public class ProductItem extends Item {
 		description.setValue(descStr);
 		setDescription(description);
 		setPubDate(new Date());		
-		
 	}
 	
 	@Override

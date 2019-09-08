@@ -11,18 +11,22 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rometools.rome.feed.rss.Item;
 
 public class Page {
+	
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd/MM/yyyy");
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private int id;
 	private String url;
 	private String title;
 	private String startingDate;
 	private List<Item> products;
-	
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd/MM/yyyy");
 
 	public Page(String url) {
 		this.url = url;
@@ -32,17 +36,18 @@ public class Page {
 	}
 
 	public List<Item> getProducts(List<Item> cachedProducts) {
-		System.out.println("Getting products in: " + url);
+		logger.info("Getting products in: " + url);
 
 		try {
 			Document doc = Jsoup.connect(url).get();
 			
 			title = doc.title();
 			try {
-				//try to trim title
 				title = title.substring(0, title.indexOf("from")-1) ;
 			}
-			catch (IndexOutOfBoundsException e) {/*leave as is if anything strange happens*/}
+			catch (IndexOutOfBoundsException e) {
+				logger.debug("Failed to trim title, using the oroginal");
+			}
 			
 			Elements productTiles = doc.getElementsByClass("product");
 			for (Element tile : productTiles) {
@@ -54,11 +59,11 @@ public class Page {
 					}
 				}
 				catch (TeaserException e) {
-					System.out.println("Ignoring teaser tile...");
+					logger.debug("Ignoring teaser tile...");
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		return products;
@@ -79,10 +84,10 @@ public class Page {
 				int day = Integer.parseInt(rawDate.substring(5, 7));
 				int month = Integer.parseInt(rawDate.substring(8, 10)) - 1;
 				Calendar pubCal = new GregorianCalendar(2019, month, day, 0, 0);
-				startingDate = dateFormat.format(pubCal.getTime());
+				startingDate = DATE_FORMAT.format(pubCal.getTime());
 			}
 			catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-				System.out.println("Failed to read date: " + e.getMessage());
+				logger.error("Failed to read date: " + e.getMessage());
 			}
 		}
 		

@@ -8,14 +8,19 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rometools.rome.feed.rss.Item;
 
 public class Offers {
 
-	private List<Page> offerPages;
 	public static final String BASE_URL = "https://www.lidl.com.mt";
 	private static final String START_URL = BASE_URL+"/en/non-food.htm";
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	private List<Page> offerPages;
 
 	public Offers() {
 		this.offerPages = new ArrayList<Page>();
@@ -28,7 +33,7 @@ public class Offers {
 				offerPages.add(new Page(BASE_URL+page.attr("href")));
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
