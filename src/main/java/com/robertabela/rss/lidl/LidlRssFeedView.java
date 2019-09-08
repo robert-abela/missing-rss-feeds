@@ -1,14 +1,12 @@
 package com.robertabela.rss.lidl;
 
 import static java.util.Calendar.DAY_OF_WEEK;
-import static java.util.Calendar.DAY_OF_YEAR;
 import static java.util.Calendar.MONDAY;
 import static java.util.Calendar.THURSDAY;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,18 +22,15 @@ import com.rometools.rome.feed.rss.Item;
 @Component
 public class LidlRssFeedView extends AbstractRssFeedView {
 
-	private static final TimeZone MT_TIMEZOME = TimeZone.getTimeZone("CEST");
-
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private List<Item> cachedList = null;
-	private int lastScrapeDayOfYear = -1;
+	private Offers cachedOffers = null;
 
 	@Override
 	protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest req) {
-		feed.setTitle("Lidl non-food offers");
+		feed.setTitle("Lidl Non-Food Offers");
 		feed.setDescription("Lidl Malta: non-food offers for this and next week");
-		feed.setLink(Offers.BASE_URL);
+		feed.setLink(Constants.BASE_URL);
 
 		/*Image img = new Image();
 		img.setUrl("https://raw.githubusercontent.com/robert-abela/missing-rss-feeds/master/src/main/resources/Lidl_logo.png");
@@ -47,23 +42,18 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 
 	@Override
 	protected List<Item> buildFeedItems(Map<String, Object> model, HttpServletRequest req, HttpServletResponse res) {
-		if (cachedList == null) {
+		if (cachedOffers == null) {
 			// First run after boot, generate list
 			logger.info("First list generated after webapp boot");
-			generateList();
+			cachedOffers = new Offers();
+			cachedOffers.scrapeNewOffers();
 		} else {
-			Calendar todayCET = Calendar.getInstance(MT_TIMEZOME);
-			switch (todayCET.get(DAY_OF_WEEK)) {
+			switch (Calendar.getInstance(Constants.MT_TIMEZOME).get(DAY_OF_WEEK)) {
 			case MONDAY:
 			case THURSDAY:
-				// Generate list on first request on Monday and Thursday
-				logger.info("First request on offer days");
-
-				int todayDayOfYear = todayCET.get(DAY_OF_YEAR);
-				if (lastScrapeDayOfYear < todayDayOfYear)
-					generateList();
-				else
-					logger.info("Already scraped today, skipping...");
+				// Scrape on first request on Monday and Thursday
+				logger.info("It's an offer day, scrape if needed...");
+				cachedOffers.scrapeNewOffers();
 				break;
 			default:
 				// Don't do anything if it's not Monday or Thursday
@@ -72,12 +62,6 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 			}
 		}
 
-		return cachedList;
-	}
-
-	private void generateList() {
-		logger.info("Generating list...");
-		cachedList = new Offers().getItems(cachedList);
-		lastScrapeDayOfYear = Calendar.getInstance(MT_TIMEZOME).get(DAY_OF_YEAR);
+		return cachedOffers.getProducts();
 	}
 }

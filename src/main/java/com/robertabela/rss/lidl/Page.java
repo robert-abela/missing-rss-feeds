@@ -1,7 +1,6 @@
 package com.robertabela.rss.lidl;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -17,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import com.rometools.rome.feed.rss.Item;
 
 public class Page {
-	
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd/MM/yyyy");
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -35,14 +32,14 @@ public class Page {
 		this.id = Integer.parseInt(idNum);
 	}
 
-	public List<Item> getProducts(List<Item> cachedProducts) {
+	public List<Item> scrapeProducts() {
 		logger.info("Getting products in: " + url);
 
 		try {
 			Document doc = Jsoup.connect(url).get();
 			
-			title = doc.title();
 			try {
+				title = doc.title();
 				title = title.substring(0, title.indexOf("from")-1) ;
 			}
 			catch (IndexOutOfBoundsException e) {
@@ -52,11 +49,7 @@ public class Page {
 			Elements productTiles = doc.getElementsByClass("product");
 			for (Element tile : productTiles) {
 				try {
-					ProductItem p = new ProductItem(this, tile);
-					if (!cachedProducts.contains(p)) {
-						p.readInfo();
-						products.add(p);
-					}
+					products.add(new ProductItem(this, tile));
 				}
 				catch (TeaserException e) {
 					logger.debug("Ignoring teaser tile...");
@@ -84,7 +77,7 @@ public class Page {
 				int day = Integer.parseInt(rawDate.substring(5, 7));
 				int month = Integer.parseInt(rawDate.substring(8, 10)) - 1;
 				Calendar pubCal = new GregorianCalendar(2019, month, day, 0, 0);
-				startingDate = DATE_FORMAT.format(pubCal.getTime());
+				startingDate = Constants.DATE_FORMAT.format(pubCal.getTime());
 			}
 			catch (NumberFormatException | StringIndexOutOfBoundsException e) {
 				logger.error("Failed to read date: " + e.getMessage());
@@ -92,5 +85,27 @@ public class Page {
 		}
 		
 		return startingDate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Page other = (Page) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
 }
