@@ -13,9 +13,3 @@ img.column-image {
 	padding-top: 35px;
 	padding-bottom: 35px;
 }
-
-img.main-image {
-height: 100vh;
-width: 100vh;
-object-fit: cover;
-}
