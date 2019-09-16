@@ -1,18 +1,16 @@
 package com.robertabela.rss.lidl;
 
-import static java.util.Calendar.DAY_OF_WEEK;
-import static java.util.Calendar.MONDAY;
-import static java.util.Calendar.THURSDAY;
-
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
@@ -20,11 +18,12 @@ import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.rss.Item; 
 
 @Component
+@EnableScheduling
 public class LidlRssFeedView extends AbstractRssFeedView {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Offers cachedOffers = null;
+	private Offers cachedOffers = new Offers();
 
 	@Override
 	protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest req) {
@@ -42,26 +41,22 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 
 	@Override
 	protected List<Item> buildFeedItems(Map<String, Object> model, HttpServletRequest req, HttpServletResponse res) {
-		if (cachedOffers == null) {
-			// First run after boot, generate list
-			logger.info("First list generated after webapp boot");
-			cachedOffers = new Offers();
-			cachedOffers.scrapeNewOffers();
-		} else {
-			switch (Calendar.getInstance(Constants.MT_TIMEZOME).get(DAY_OF_WEEK)) {
-			case MONDAY:
-			case THURSDAY:
-				// Scrape on first request on Monday and Thursday
-				logger.info("It's an offer day, scrape if needed...");
-				cachedOffers.scrapeNewOffers();
-				break;
-			default:
-				// Don't do anything if it's not Monday or Thursday
-				logger.info("It's not offer day, skipping...");
-				break;
-			}
-		}
-
 		return cachedOffers.getProducts();
 	}
+	
+	/**
+	 * Scraping runs automatically on Monday and Thursday at 4am, CET
+	 */
+    @Scheduled(cron="0 0 4 * * MON,THU", zone="Europe/Rome")
+    public void scrapeNewOffers() {
+		logger.info("It's offer day, fresh scrape is needed...");
+		cachedOffers.scrapeNewOffers();
+    }
+    
+    @PostConstruct
+    private void firstRun() {
+		// First run after boot, generate list
+		logger.info("First scrape during webapp boot");
+		cachedOffers.scrapeNewOffers();
+    }
 }

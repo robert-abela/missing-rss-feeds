@@ -1,10 +1,7 @@
 package com.robertabela.rss.lidl;
 
-import static java.util.Calendar.DAY_OF_YEAR;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -21,8 +18,7 @@ public class Offers {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private List<Page> cachedPages;
-	private List<Item> cachedProducts = null;
-	private int lastScrapeDayOfYear = Constants.NOT_YET_SCRAPED;
+	private List<Item> cachedProducts;
 
 	public Offers() {
 		this.cachedPages = new ArrayList<Page>();
@@ -34,13 +30,8 @@ public class Offers {
 	}
 
 	public void scrapeNewOffers() {
-		int todayDayOfYear = Calendar.getInstance(Constants.MT_TIMEZOME).get(DAY_OF_YEAR);
-		if (lastScrapeDayOfYear >= todayDayOfYear) {
-			logger.info("Already scraped today, skipping...");
-			return;
-		}
-		
 		try {
+			boolean productsAdded = false;
 			Document doc = Jsoup.connect(Constants.START_URL).get();
 			Elements pages = doc.getElementsByClass("theme__item");
 
@@ -48,15 +39,16 @@ public class Offers {
 				Page foundPage = new Page(Constants.BASE_URL+page.attr("href"));
 				if (!cachedPages.contains(foundPage)) {
 					logger.debug("Found new page to scrape: " + foundPage.getId());
+					productsAdded = true;
 					cachedPages.add(foundPage);
 					cachedProducts.addAll(foundPage.scrapeProducts());
 				}
 			}
-
-			lastScrapeDayOfYear = todayDayOfYear;
+			
+			if (!productsAdded)
+				logger.warn("Scrape failed to add any new products");
 		} catch (IOException e) {
 			logger.error("Scraping new offers failed: "+e.getMessage());
-			lastScrapeDayOfYear = Constants.NOT_YET_SCRAPED;
 		}
 	}
 }
