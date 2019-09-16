@@ -1,0 +1,15 @@
+body {
+  padding-top: 5rem;
+  background-color: lightgray;
+
+}
+.starter-template {
+  padding: 1rem 1rem;
+  text-align: center;
+}
+
+img.column-image {
+	width: 128px;
+	padding-top: 35px;
+	padding-bottom: 35px;
+}
