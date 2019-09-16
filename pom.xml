@@ -9,8 +9,8 @@
 		<version>2.1.4.RELEASE</version>
 	</parent>
 	<groupId>com.robertabela</groupId>
-	<artifactId>rss-feed</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>missing-rss-feed</artifactId>
+	<version>2.0.0</version>
 	<name>rss-feed</name>
 	<description>Custom RSS Feed Builder</description>
 
@@ -34,10 +34,10 @@
 			<version>1.11.3</version>
 		</dependency>
 		<!-- To use SLF4J with Logback you don’t need to add SLF4J to your classpath. 
-		Logback is already using SLF4J. It’s considered as the reference implementation.--> 
-		<dependency> 
-			<groupId>ch.qos.logback</groupId> 
-			<artifactId>logback-classic</artifactId> 
+			Logback is already using SLF4J. It’s considered as the reference implementation. -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
