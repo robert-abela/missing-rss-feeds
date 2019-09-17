@@ -24,19 +24,25 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Offers cachedOffers = new Offers();
+	private Offers cachedOffers;
+	private Image img;
+	
+	public LidlRssFeedView() {
+		cachedOffers = new Offers();
+
+		img = new Image();
+		img.setTitle("LIDL Logo");
+		img.setUrl(Constants.LIDL_LOGO);
+		img.setLink(Constants.LIDL_LOGO);
+		img.setWidth(142);
+		img.setHeight(142);
+	}
 
 	@Override
 	protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest req) {
-		feed.setTitle("Lidl Non-Food Offers");
-		feed.setDescription("Lidl Malta: non-food offers for this and next week");
+		feed.setTitle("LIDL Non-Food Offers");
+		feed.setDescription("LIDL Malta: non-food offers for this and next week");
 		feed.setLink(Constants.BASE_URL);
-
-		Image img = new Image();
-		img.setUrl("https://raw.githubusercontent.com/robert-abela/missing-rss-feeds/master/src/main/resources/public/images/lidl.png");
-		img.setTitle("LIDL Logo");
-		img.setHeight(100);
-		img.setWidth(100);
 		feed.setImage(img);
 	}
 
@@ -53,10 +59,12 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 		logger.info("It's offer day, fresh scrape is needed...");
 		cachedOffers.scrapeNewOffers();
     }
-    
+
+    /**
+     * On first run after boot, perform scraping to generate product list
+     */
     @PostConstruct
     private void firstRun() {
-		// First run after boot, generate list
 		logger.info("First scrape during webapp boot");
 		cachedOffers.scrapeNewOffers();
     }

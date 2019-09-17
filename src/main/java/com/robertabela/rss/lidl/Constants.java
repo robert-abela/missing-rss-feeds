@@ -9,5 +9,7 @@ public class Constants {
 	public static final String BASE_URL = "https://www.lidl.com.mt";
 	public static final String START_URL = BASE_URL+"/en/non-food.htm";
 
-	public static final String AUTHOR = "robert-abela/missing-rss-feeds/lidl";
+	public static final String AUTHOR = "missing-rss-feeds";
+
+	public static final String LIDL_LOGO = "https://www.lidl.com.mt/statics/lidl-offering-mt/ds_img/layout/brand__default.svg";
 }
