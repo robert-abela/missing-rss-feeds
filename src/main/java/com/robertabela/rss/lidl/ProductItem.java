@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.jsoup.nodes.Element;
 
+import com.robertabela.rss.Constants;
 import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Item;
@@ -20,7 +21,7 @@ public class ProductItem extends Item {
 		String itemTitle = tile.getElementsByClass("product__title").text();
 		setTitle(itemTitle);
 		setAuthor(Constants.AUTHOR);
-		setLink(Constants.BASE_URL+relativeLink);
+		setLink(Constants.LIDL_BASE_URL+relativeLink);
 		
 		Element bigDiv = tile.getElementsByClass("product__image").get(0);
 		Element innerDiv = bigDiv.getElementsByTag("div").get(0);

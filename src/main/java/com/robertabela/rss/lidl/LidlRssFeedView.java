@@ -9,17 +9,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
+import com.robertabela.rss.Constants;
 import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.rss.Image;
 import com.rometools.rome.feed.rss.Item; 
 
 @Component
-@EnableScheduling
 public class LidlRssFeedView extends AbstractRssFeedView {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -42,7 +41,7 @@ public class LidlRssFeedView extends AbstractRssFeedView {
 	protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest req) {
 		feed.setTitle("LIDL Non-Food Offers");
 		feed.setDescription("LIDL Malta: non-food offers for this and next week");
-		feed.setLink(Constants.BASE_URL);
+		feed.setLink(Constants.LIDL_BASE_URL);
 		feed.setImage(img);
 	}
 
