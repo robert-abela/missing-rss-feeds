@@ -6,15 +6,24 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.View;
 
 import com.robertabela.rss.lidl.LidlRssFeedView;
+import com.robertabela.rss.tom.TomRssFeedView;
 
 @RestController
 public class RssFeedContoller {
  
     @Autowired
-    private LidlRssFeedView view;
+    private LidlRssFeedView lidlView;
      
+    @Autowired
+    private TomRssFeedView tomView;
+
     @GetMapping("/lidl")
-    public View getFeed() {
-        return view;
+    public View getLidlFeed() {
+        return lidlView;
+    }
+
+    @GetMapping("/tom")
+    public View getTomFeed() {
+        return tomView;
     }
 }
