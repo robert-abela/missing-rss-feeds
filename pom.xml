@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.robertabela</groupId>
 	<artifactId>missing-rss-feed</artifactId>
-	<version>2.0.0</version>
+	<version>2.1.0</version>
 	<name>missing-rss-feed</name>
 	<description>Custom RSS Feed Builder</description>
 
@@ -60,5 +60,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
