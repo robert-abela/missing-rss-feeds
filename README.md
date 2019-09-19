@@ -1,7 +1,8 @@
 # missing-rss-feeds
 RSS feeds for sites that do not officially provide them. This project was developed to add missing feeds to my RSS feed library.
 It was also my first project using Spring and Bootstrap, don't expect it to be a showcase of best practices. 
-All images, text and links are the ones found in the original web site.            
+All images, text and links are the ones found in the original web site.
+
 A live version is available at: https://missing-rss-feed.herokuapp.com/
 
 ## Lidl Malta non-food offers
