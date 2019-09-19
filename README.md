@@ -7,11 +7,9 @@ A live version is available at: https://missing-rss-feed.herokuapp.com/
 ## Lidl Malta non-food offers
 LIDL Malta updates [non-food offers](https://www.lidl.com.mt/en/non-food.htm) every Monday and Thursday but do not offer any RSS feed to make it easier for potential customers to keep themselves updated. This feed aims to fill in that gap by scraping the LIDL offers and making them available as an RSS feed. 
 
-All images, text and links are the ones found in the original web site.
-
 The RSS feed can be accessed at: https://missing-rss-feed.herokuapp.com/lidl
 
-##@TheTimesofMalta Twitter
+## @TheTimesofMalta Twitter
 [The Times of Malta](https://www.timesofmalta.com) maintains a Twitter handle named [@TheTimesofMalta](https://twitter.com/TheTimesofMalta) which it uses to tweet some of the news items on its web site. 
 In the past there used to be an RSS feed which has now been turned off. This project aims to fill that gap by converting the tweet stream into an RSS feed. 
 
