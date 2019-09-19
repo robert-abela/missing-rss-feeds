@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.robertabela.rss.Constants;
 import com.rometools.rome.feed.rss.Item;
 
 public class Offers {
@@ -32,11 +33,11 @@ public class Offers {
 	public void scrapeNewOffers() {
 		try {
 			boolean productsAdded = false;
-			Document doc = Jsoup.connect(Constants.START_URL).get();
+			Document doc = Jsoup.connect(Constants.LIDL_START_URL).get();
 			Elements pages = doc.getElementsByClass("theme__item");
 
 			for (Element page : pages) {
-				Page foundPage = new Page(Constants.BASE_URL+page.attr("href"));
+				Page foundPage = new Page(Constants.LIDL_BASE_URL+page.attr("href"));
 				if (!cachedPages.contains(foundPage)) {
 					logger.debug("Found new page to scrape: " + foundPage.getId());
 					productsAdded = true;

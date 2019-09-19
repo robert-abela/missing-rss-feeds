@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.robertabela.rss.Constants;
 import com.rometools.rome.feed.rss.Item;
 
 public class Page {
