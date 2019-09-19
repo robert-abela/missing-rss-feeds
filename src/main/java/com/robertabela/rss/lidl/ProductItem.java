@@ -5,6 +5,7 @@ import java.util.Date;
 import org.jsoup.nodes.Element;
 
 import com.robertabela.rss.Constants;
+import com.robertabela.rss.GUID;
 import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Item;
@@ -38,6 +39,7 @@ public class ProductItem extends Item {
 				page.getDate(tile));
 		description.setValue(descStr);
 		setDescription(description);
-		setPubDate(new Date());		
+		setPubDate(new Date());
+		setGuid(new GUID(page.getId() + ":" + getTitle()));
 	}
 }

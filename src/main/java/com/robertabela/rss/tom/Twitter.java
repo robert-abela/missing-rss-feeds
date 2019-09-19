@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.robertabela.rss.GUID;
 import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Item;
@@ -61,7 +62,7 @@ public class Twitter {
 			.setOAuthAccessTokenSecret(twitterOauthAccessSecret);
 		TwitterFactory tf = new TwitterFactory(cb.build());
 		twitter = tf.getInstance();
-		  
+
 		cachedItems = getTweets(new Paging(1, NUM_OF_TWEETS));
 	}
 	
@@ -108,6 +109,8 @@ public class Twitter {
 				String descStr = String.format("<a href=\"%s\">%s</a>", newsItem.getLink(), title);
 				description.setValue(descStr);
 				newsItem.setDescription(description);
+				
+				newsItem.setGuid(new GUID(tweetStatus));
 				
 				tweets.add(newsItem);
 				if (tweetStatus.getId() > lastTweet)
