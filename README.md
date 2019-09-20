@@ -1,4 +1,4 @@
-# missing-rss-feeds v2.1.0
+# missing-rss-feeds v2.1.1
 RSS feeds for sites that do not officially provide them. This project was developed to add missing feeds to my RSS feed library.
 It was also my first project using Spring and Bootstrap, don't expect it to be a showcase of best practices. 
 All images, text and links are the ones found in the original web site.
@@ -12,6 +12,6 @@ The RSS feed can be accessed at: https://missing-rss-feed.herokuapp.com/lidl
 
 ## @TheTimesofMalta Twitter
 [The Times of Malta](https://www.timesofmalta.com) maintains a Twitter handle named [@TheTimesofMalta](https://twitter.com/TheTimesofMalta) which it uses to tweet some of the news items on its web site. 
-In the past there used to be an RSS feed which has now been turned off. This project aims to fill that gap by converting the tweet stream into an RSS feed. 
+In the past there used to be an RSS feed which has now been turned off. This project aims to fill that gap by converting the tweet stream into an RSS feed. It also fetches whole article and main image from Times of Malta after following t.co and bit.ly redirects.
 
 The RSS feed can be accessed at: https://missing-rss-feed.herokuapp.com/tom
