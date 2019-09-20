@@ -67,7 +67,7 @@ public class ToMTweetParser implements TweetParser {
 			  }
 			}
 
-			String descStr = String.format("<img src=\"%s\" width=\"600px\"/>%s", mainIgmURL, article.html());
+			String descStr = String.format("<img src=\"%s\" />%s", mainIgmURL, article.html());
 			Description description = new Description();
 			description.setType(Content.HTML);
 			description.setValue(descStr);
