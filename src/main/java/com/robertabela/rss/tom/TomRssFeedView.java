@@ -37,9 +37,9 @@ public class TomRssFeedView extends AbstractRssFeedView {
 	}
 
 	/**
-	 * Twitter update runs automatically hourly (first time 1 hour)
+	 * Twitter update runs automatically every 30 mins (first time 30 mins)
 	 */
-	@Scheduled(fixedRate=1000*60*60, initialDelay=1000*60*60)
+	@Scheduled(fixedRate=1000*60*30, initialDelay=1000*60*30)
     public void scrapeNewOffers() {
 		logger.info("Scheduled hourly Twitter update...");
 		twitter.updateTweets();
