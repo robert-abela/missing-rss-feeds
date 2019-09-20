@@ -1,4 +1,4 @@
-package com.robertabela.rss.tom;
+package com.robertabela.twittertools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,26 +6,24 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.robertabela.rss.GUID;
-import com.rometools.rome.feed.rss.Content;
-import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Item;
 
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.URLEntity;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class Twitter {
 	private static final int NUM_OF_TWEETS = 25;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	private String twitterUserName;
+	private TweetParser parser;
 	
 	private twitter4j.Twitter twitter;
 	private long lastTweet;
-	private String twitterUserName;
 	private String twitterOauthConsumerKey;
 	private String twitterOauthConsumerSecret;
 	private String twitterOauthAccessToken;
@@ -33,8 +31,9 @@ public class Twitter {
 	
 	private List<Item> cachedItems;
 	
-	public Twitter(String twitterUserName) throws IllegalStateException {
+	public Twitter(String twitterUserName, TweetParser parser) throws IllegalStateException {
 		this.twitterUserName = twitterUserName;
+		this.parser = parser;
 		
 		logger.info("Loading Twitter API variables from environment...");
 		twitterOauthConsumerKey = System.getenv().get("OAUTHCONSUMERKEY");
@@ -88,33 +87,18 @@ public class Twitter {
 	}
 	
 	private List<Item> getTweets(Paging page) {
-		
 		try {
 			List<Item> tweets = new ArrayList<Item>();
 			List<Status> statuses = twitter.getUserTimeline(twitterUserName, page);
 			for (Status tweetStatus : statuses) {
-				logger.debug(tweetStatus.getId() + " - " + tweetStatus.getText());
-				Item newsItem = new Item();
-				newsItem.setAuthor(tweetStatus.getUser().getScreenName());
-				String title = tweetStatus.getText();
-				if (title.contains("https"))
-					title = title.substring(0, title.indexOf("https"));
-				newsItem.setTitle(title);
-				newsItem.setPubDate(tweetStatus.getCreatedAt());
-				for (URLEntity url : tweetStatus.getURLEntities())
-					newsItem.setLink(url.getURL());
+				logger.error(tweetStatus.getId() + " - " + tweetStatus.getText());
 				
-				Description description = new Description();
-				description.setType(Content.HTML);
-				String descStr = String.format("<a href=\"%s\">%s</a>", newsItem.getLink(), title);
-				description.setValue(descStr);
-				newsItem.setDescription(description);
-				
-				newsItem.setGuid(new GUID(tweetStatus));
-				
-				tweets.add(newsItem);
-				if (tweetStatus.getId() > lastTweet)
-					lastTweet = tweetStatus.getId();
+				Item parsedItem = parser.parse(tweetStatus);
+				if (parsedItem != null) {
+					tweets.add(parsedItem);
+					if (tweetStatus.getId() > lastTweet)
+						lastTweet = tweetStatus.getId();
+				}
 			}
 			return tweets;
 		}

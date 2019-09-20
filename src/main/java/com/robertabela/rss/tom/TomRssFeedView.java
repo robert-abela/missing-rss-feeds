@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import com.robertabela.rss.Constants;
+import com.robertabela.twittertools.Twitter;
 import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.rss.Item;
 
@@ -50,7 +51,7 @@ public class TomRssFeedView extends AbstractRssFeedView {
 	@PostConstruct
 	private void firstRun() {
 		try {
-			twitter = new Twitter(Constants.TOM_TWITTER_HANDLE);
+			twitter = new Twitter(Constants.TOM_TWITTER_HANDLE, new ToMTweetParser());
 		} catch (IllegalStateException e) {
 			logger.error(e.getMessage());
 		}
