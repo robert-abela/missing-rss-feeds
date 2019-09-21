@@ -70,20 +70,27 @@ public class Twitter {
 		List<Item> freshTweets = getTweets(new Paging(1, NUM_OF_TWEETS, lastTweet));
 		
 		if (freshTweets.isEmpty()) {
-			logger.debug("Nothing new returned");
+			logger.debug("No new tweets since last check");
 			return;
 		}
 			
 		logger.debug("Updating tweets, returned " + freshTweets.size());
-		cachedItems.addAll(freshTweets);		
-		if (cachedItems.size() > NUM_OF_TWEETS) {
+		
+		synchronized (cachedItems) {
+			cachedItems.addAll(freshTweets);
+			if (cachedItems.size() <= NUM_OF_TWEETS)
+				return;
+			
 			cachedItems = cachedItems.subList(0, NUM_OF_TWEETS-1);
-			logger.debug("Exceeded maximum number of tweets, shortening list");
 		}
+		
+		logger.debug("Exceeded maximum number of tweets, shortening list");
 	}
 	
 	public List<Item> getTweets() {
-		return cachedItems;
+		synchronized (cachedItems) {
+			return cachedItems;
+		}
 	}
 	
 	private List<Item> getTweets(Paging page) {
