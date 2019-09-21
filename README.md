@@ -1,4 +1,4 @@
-# missing-rss-feeds v2.1.1
+# missing-rss-feeds v2.1.2
 RSS feeds for sites that do not officially provide them. This project was developed to add missing feeds to my RSS feed library.
 It was also my first project using Spring and Bootstrap, don't expect it to be a showcase of best practices. 
 All images, text and links are the ones found in the original web site.
