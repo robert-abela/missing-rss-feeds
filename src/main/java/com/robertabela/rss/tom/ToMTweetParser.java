@@ -20,26 +20,26 @@ import twitter4j.Status;
 import twitter4j.URLEntity;
 
 public class ToMTweetParser implements TweetParser {
-	
+
 	private static final String DEFAULT_IMAGE = "https://raw.githubusercontent.com/robert-abela/missing-rss-feeds/master/src/main/resources/public/images/tom.png";
+	private static final String NO_NAMED_AUTHOR = "TimesofMalta";
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public Item parse(Status tweetStatus) {
-		
+
 		Item newsItem = new Item();
 		newsItem.setGuid(new GUID(tweetStatus));
 		newsItem.setPubDate(tweetStatus.getCreatedAt());
-		newsItem.setAuthor("TimesofMalta");
-		
+
 		for (URLEntity url : tweetStatus.getURLEntities())
 			newsItem.setLink(url.getURL());
-		
+
 		fetchInfoFromSource(newsItem);
-		
+
 		return newsItem;
 	}
-	
+
 	private void fetchInfoFromSource(Item newsItem) {
 		try {
 			String twtURL = newsItem.getLink();
@@ -53,28 +53,58 @@ public class ToMTweetParser implements TweetParser {
 
 			Document timesDoc = Jsoup.connect(tomURL).get();
 			newsItem.setTitle(timesDoc.title());
-			
-			Element article = timesDoc.getElementsByClass("ar-Article_Content").get(0);
-			Elements metaTags = timesDoc.getElementsByTag("meta");
-			String mainIgmURL = DEFAULT_IMAGE;
-
-			for (Element metaTag : metaTags) {
-			  String property = metaTag.attr("property");
-
-			  if ("og:image".equals(property)) {
-				  mainIgmURL = metaTag.attr("content");
-				  break;
-			  }
-			}
-
-			String descStr = String.format("<img src=\"%s\" />%s", mainIgmURL, article.html());
-			Description description = new Description();
-			description.setType(Content.HTML);
-			description.setValue(descStr);
-			newsItem.setDescription(description);
+			newsItem.setAuthor(fetchAuthor(timesDoc));
+			newsItem.setDescription(fetchDescription(timesDoc));
 		}
 		catch (IOException | IndexOutOfBoundsException e) {
 			logger.error(e.getMessage());
 		}
+	}
+	
+	private Description fetchDescription(Document timesDoc) {
+		Element article = timesDoc.getElementsByClass("ar-Article_Content").get(0);
+
+		String descStr = String.format("<img src=\"%s\" />%s", fetchImage(timesDoc), article.html());
+		Description description = new Description();
+		description.setType(Content.HTML);
+		description.setValue(descStr);
+		return description;
+	}
+
+	private String fetchImage(Document timesDoc) {
+		Elements metaTags = timesDoc.getElementsByTag("meta");
+
+		for (Element metaTag : metaTags) {
+			String property = metaTag.attr("property");
+
+			if ("og:image".equals(property)) {
+				return metaTag.attr("content");
+			}
+		}
+
+		return DEFAULT_IMAGE;
+	}
+
+	private String fetchAuthor(Document timesDoc) {
+		Elements scriptTags = timesDoc.getElementsByTag("script");
+		final String JSON_NAME = "name\":\"";
+
+		for (Element scriptTag : scriptTags) {
+			String property = scriptTag.attr("id");
+
+			if ("author-ld".equals(property)) {
+				String authorData = scriptTag.html();
+				int start = authorData.indexOf(JSON_NAME) + JSON_NAME.length();
+				int end = authorData.indexOf("\"", start);
+				try {
+					return authorData.substring(start, end).trim();
+				}
+				catch (IndexOutOfBoundsException e) {
+					return NO_NAMED_AUTHOR;
+				}
+			}
+		}
+		
+		return NO_NAMED_AUTHOR;
 	}
 }
