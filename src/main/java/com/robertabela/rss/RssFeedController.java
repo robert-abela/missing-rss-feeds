@@ -20,7 +20,7 @@ import com.robertabela.rss.lidl.LidlRssFeedView;
 import com.robertabela.rss.tom.TomRssFeedView;
 
 @RestController
-public class RssFeedContoller {
+public class RssFeedController {
 
 	@Autowired
 	private LidlRssFeedView lidlView;
