@@ -84,7 +84,7 @@ public class Twitter {
 			cachedItems = cachedItems.subList(0, NUM_OF_TWEETS-1);
 		}
 		
-		logger.debug("Exceeded maximum number of tweets, shortening list");
+		logger.debug("Exceeded maximum number of tweets, removing older ones");
 	}
 	
 	public List<Item> getTweets() {
@@ -98,7 +98,7 @@ public class Twitter {
 			List<Item> tweets = new ArrayList<Item>();
 			List<Status> statuses = twitter.getUserTimeline(twitterUserName, page);
 			for (Status tweetStatus : statuses) {
-				logger.error(tweetStatus.getId() + " - " + tweetStatus.getText());
+				logger.debug(tweetStatus.getId() + " - " + tweetStatus.getText());
 				
 				Item parsedItem = parser.parse(tweetStatus);
 				if (parsedItem != null) {
