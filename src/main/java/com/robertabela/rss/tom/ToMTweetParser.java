@@ -27,38 +27,40 @@ public class ToMTweetParser implements TweetParser {
 
 	@Override
 	public Item parse(Status tweetStatus) {
-
 		Item newsItem = new Item();
 		newsItem.setGuid(new GUID(tweetStatus));
 		newsItem.setPubDate(tweetStatus.getCreatedAt());
-
 		for (URLEntity url : tweetStatus.getURLEntities())
 			newsItem.setLink(url.getURL());
 
-		fetchInfoFromSource(newsItem);
+		try {
+			fetchInfoFromSource(newsItem);
+		}
+		catch (IOException | IndexOutOfBoundsException e) {
+			logger.warn(e.getMessage());
+			newsItem.setTitle(tweetStatus.getText());
+			Description empty = new Description();
+			empty.setValue("[No Attachment in Tweet]");
+			newsItem.setDescription(empty);
+		}
 
 		return newsItem;
 	}
 
-	private void fetchInfoFromSource(Item newsItem) {
-		try {
-			String twtURL = newsItem.getLink();
-			Document bitlyDoc = Jsoup.connect(twtURL).get();
-			String bitlyURL = bitlyDoc.title();
-			logger.debug("Expanding: " + twtURL + "->" + bitlyURL);
+	private void fetchInfoFromSource(Item newsItem) throws IOException {
+		String twtURL = newsItem.getLink();
+		Document bitlyDoc = Jsoup.connect(twtURL).get();
+		String bitlyURL = bitlyDoc.title();
+		logger.debug("Expanding: " + twtURL + "->" + bitlyURL);
 
-			Response response = Jsoup.connect(bitlyURL).followRedirects(false).execute();
-			String tomURL = response.header("location");
-			logger.debug("Expanding: " + bitlyURL + "->" + tomURL);
+		Response response = Jsoup.connect(bitlyURL).followRedirects(false).execute();
+		String tomURL = response.header("location");
+		logger.debug("Expanding: " + bitlyURL + "->" + tomURL);
 
-			Document timesDoc = Jsoup.connect(tomURL).get();
-			newsItem.setTitle(timesDoc.title());
-			newsItem.setAuthor(fetchAuthor(timesDoc));
-			newsItem.setDescription(fetchDescription(timesDoc));
-		}
-		catch (IOException | IndexOutOfBoundsException e) {
-			logger.error(e.getMessage());
-		}
+		Document timesDoc = Jsoup.connect(tomURL).get();
+		newsItem.setTitle(timesDoc.title());
+		newsItem.setAuthor(fetchAuthor(timesDoc));
+		newsItem.setDescription(fetchDescription(timesDoc));
 	}
 	
 	private Description fetchDescription(Document timesDoc) {
