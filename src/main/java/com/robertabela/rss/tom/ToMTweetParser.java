@@ -38,10 +38,15 @@ public class ToMTweetParser implements TweetParser {
 		}
 		catch (IOException | IndexOutOfBoundsException e) {
 			logger.warn(e.getMessage());
-			newsItem.setTitle(tweetStatus.getText());
-			Description empty = new Description();
-			empty.setValue("[No Attachment in Tweet]");
-			newsItem.setDescription(empty);
+            String tweetText = tweetStatus.getText();
+            
+            Description titleOnly = new Description();
+            titleOnly.setValue(tweetText);
+            newsItem.setDescription(titleOnly);
+            
+            if (tweetText.contains("https"))
+                tweetText = tweetText.substring(0, tweetText.indexOf("https"));
+            newsItem.setTitle(tweetText);
 		}
 
 		return newsItem;
