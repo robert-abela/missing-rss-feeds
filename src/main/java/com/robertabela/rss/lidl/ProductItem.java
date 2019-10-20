@@ -35,7 +35,7 @@ public class ProductItem extends Item {
 				imageUrl,
 				page.getTitle(), 
 				itemTitle, 
-				tile.getElementsByClass("pricefield__price").attr("content"),
+				tile.getElementsByClass("pricebox__price").text(),
 				page.getDate(tile));
 		description.setValue(descStr);
 		setDescription(description);
