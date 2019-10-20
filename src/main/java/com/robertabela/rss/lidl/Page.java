@@ -29,7 +29,12 @@ public class Page {
 	public Page(String url) {
 		this.url = url;
 		this.products = new ArrayList<>();
-		String idNum = this.url.substring(this.url.indexOf("?id=") + 4, this.url.indexOf("&"));
+		
+		String idNum = this.url.substring(this.url.lastIndexOf("/c") + 2); 
+		int secondSash = idNum.indexOf('/');
+		if (secondSash != -1)
+			idNum = idNum.substring(0, secondSash);
+		
 		this.id = Integer.parseInt(idNum);
 	}
 
