@@ -36,7 +36,7 @@ public class ToMTweetParser implements TweetParser {
 		try {
 			fetchInfoFromSource(newsItem);
 		}
-		catch (IOException | IndexOutOfBoundsException e) {
+		catch (IOException | IndexOutOfBoundsException | IllegalArgumentException e) {
 			logger.warn(e.getMessage());
             String tweetText = tweetStatus.getText();
             
@@ -60,8 +60,11 @@ public class ToMTweetParser implements TweetParser {
 
 		Response response = Jsoup.connect(bitlyURL).followRedirects(false).execute();
 		String tomURL = response.header("location");
-		logger.debug("Expanding: " + bitlyURL + "->" + tomURL);
+		
+		if (tomURL == null)
+			throw new IllegalArgumentException("Expanding FAILED: " + bitlyURL + "->" + tomURL);
 
+		logger.debug("Expanding: " + bitlyURL + "->" + tomURL);
 		Document timesDoc = Jsoup.connect(tomURL).get();
 		newsItem.setTitle(timesDoc.title());
 		newsItem.setAuthor(fetchAuthor(timesDoc));
