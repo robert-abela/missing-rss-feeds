@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 import com.robertabela.rss.Constants;
 import com.robertabela.twittertools.Twitter;
 import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.feed.rss.Image;
 import com.rometools.rome.feed.rss.Item;
 
 @Component
@@ -22,12 +23,23 @@ import com.rometools.rome.feed.rss.Item;
 public class TomRssFeedView extends AbstractRssFeedView {
 
 	private Twitter twitter;
+	private Image img;
+	
+	public TomRssFeedView() {
+		img = new Image();
+		img.setTitle("LIDL Logo");
+		img.setUrl(Constants.TOM_LOGO);
+		img.setLink(Constants.TOM_LOGO);
+		img.setWidth(185);
+		img.setHeight(185);
+	}
 
 	@Override
 	protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest req) {
 		feed.setTitle("Times of Malta Twitter feed");
 		feed.setDescription("Times of Malta: all the tweets by @TheTimesofMalta");
 		feed.setLink(Constants.TOM_BASE_URL);
+		feed.setImage(img);
 	}
 
 	@Override

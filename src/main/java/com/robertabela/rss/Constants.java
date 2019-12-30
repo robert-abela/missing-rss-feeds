@@ -14,4 +14,5 @@ public class Constants {
 	
 	public static final String TOM_BASE_URL = "https://twitter.com/TheTimesofMalta";
 	public static final String TOM_TWITTER_HANDLE = "TheTimesofMalta";
+	public static final String TOM_LOGO = "https://missing-rss-feed.herokuapp.com/images/tom-logo.png";
 }
