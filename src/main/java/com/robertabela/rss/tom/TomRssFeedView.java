@@ -36,7 +36,7 @@ public class TomRssFeedView extends AbstractRssFeedView {
 
 	@Override
 	protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest req) {
-		feed.setTitle("Times of Malta Twitter feed");
+		feed.setTitle("Times of Malta");
 		feed.setDescription("Times of Malta: all the tweets by @TheTimesofMalta");
 		feed.setLink(Constants.TOM_BASE_URL);
 		feed.setImage(img);
