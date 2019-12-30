@@ -27,7 +27,7 @@ public class TomRssFeedView extends AbstractRssFeedView {
 	
 	public TomRssFeedView() {
 		img = new Image();
-		img.setTitle("LIDL Logo");
+		img.setTitle("TOM Logo");
 		img.setUrl(Constants.TOM_LOGO);
 		img.setLink(Constants.TOM_LOGO);
 		img.setWidth(185);
