@@ -82,7 +82,9 @@ public class Page {
 				String rawDate = tile.getElementsByClass("ribbon__item--primary").text();
 				int day = Integer.parseInt(rawDate.substring(5, 7));
 				int month = Integer.parseInt(rawDate.substring(8, 10)) - 1;
-				Calendar pubCal = new GregorianCalendar(2019, month, day, 0, 0);
+				Calendar pubCal = new GregorianCalendar(); //use current year (will not work end of Dec for Jan offers)
+				pubCal.set(Calendar.DAY_OF_MONTH, day);
+				pubCal.set(Calendar.MONTH, month);
 				startingDate = Constants.DATE_FORMAT.format(pubCal.getTime());
 			}
 			catch (NumberFormatException | StringIndexOutOfBoundsException e) {
