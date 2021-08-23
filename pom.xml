@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.11.3</version>
+			<version>1.14.2</version>
 		</dependency>
 		<!-- To use SLF4J with Logback you don’t need to add SLF4J to your classpath. 
 			Logback is already using SLF4J. It’s considered as the reference implementation. -->
